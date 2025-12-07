@@ -2,20 +2,18 @@
   type: map
   contents:
     - name: Full Name
-      value: Albert Einstein
-    - name: Date of Birth
-      value: 14th March 1879
+      value: Abhinav Gupta
     - name: Languages
-      value: English, German
+      value: English, Hindi
 
 - title: Education
   type: time_table
   contents:
     - title: PhD
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1905
+      institution: University of New Hampshire, New Hampshire, USA
+      year: 2025
       description:
-        - Description 1.
+        - Improving User Experience using HTTP/3 and EPS. 
         - Description 2.
         - title: Description 3.
           contents:
