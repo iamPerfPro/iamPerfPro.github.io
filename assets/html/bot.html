@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Personal Site Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at top left, #e0e7ff, #f3f4f6 45%, #e5e7eb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .faq-chatbot {
+            width: 380px;
+            max-width: 95vw;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow:
+                0 18px 40px rgba(15, 23, 42, 0.25),
+                0 0 0 1px rgba(148, 163, 184, 0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .faq-header {
+            padding: 12px 14px;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #6366f1 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 17px;
+            box-shadow: 0 0 0 2px rgba(209, 213, 219, 0.4);
+            flex-shrink: 0;
+        }
+
+        .faq-header-main {
+            flex: 1;
+        }
+
+        .faq-header-title {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .faq-status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.45);
+        }
+
+        .faq-header-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .faq-header-right {
+            font-size: 11px;
+            opacity: 0.9;
+            text-align: right;
+        }
+
+        .faq-messages {
+            padding: 12px 14px 4px;
+            height: 380px;
+            max-height: 70vh;
+            overflow-y: auto;
+            background: linear-gradient(180deg, #f9fafb, #f3f4f6 40%, #f9fafb);
+            scroll-behavior: smooth;
+        }
+
+        .faq-day-divider {
+            text-align: center;
+            margin: 6px 0 10px;
+            position: relative;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        .faq-day-divider::before,
+        .faq-day-divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 28%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #d1d5db);
+        }
+
+        .faq-day-divider::before {
+            left: 4%;
+        }
+
+        .faq-day-divider::after {
+            right: 4%;
+        }
+
+        .faq-message {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .faq-message.bot {
+            justify-content: flex-start;
+        }
+
+        .faq-message.user {
+            justify-content: flex-end;
+        }
+
+        .faq-bubble-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+        }
+
+        .faq-bubble {
+            padding: 8px 10px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            position: relative;
+            animation: fadeInUp 0.18s ease-out;
+        }
+
+        .faq-message.bot .faq-bubble {
+            background: white;
+            color: #111827;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 4px;
+        }
+
+        .faq-message.user .faq-bubble {
+            background: #4f46e5;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .faq-timestamp {
+            font-size: 10px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .faq-typing-row {
+            display: none;
+            padding: 0 14px 8px;
+        }
+
+        .faq-typing-bubble {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: #e5e7eb;
+        }
+
+        .faq-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 999px;
+            background: #6b7280;
+            opacity: 0.4;
+            animation: dotPulse 1s infinite alternate;
+        }
+
+        .faq-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .faq-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotPulse {
+            from {
+                opacity: 0.3;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(-1px);
+            }
+        }
+
+        .faq-suggestions {
+            padding: 0 10px 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .faq-suggestion-pill {
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            padding: 4px 8px;
+            font-size: 11px;
+            background: white;
+            cursor: pointer;
+            color: #4b5563;
+            transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.06s;
+            white-space: nowrap;
+        }
+
+        .faq-suggestion-pill:hover {
+            background: #eef2ff;
+            border-color: #4f46e5;
+            color: #1f2937;
+            transform: translateY(-1px);
+        }
+
+        .faq-input-area {
+            padding: 10px;
+            border-top: 1px solid #e5e7eb;
+            background: #ffffff;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .faq-input {
+            flex: 1;
+            border-radius: 999px;
+            border: 1px solid #d1d5db;
+            padding: 8px 12px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+            background-color: #f9fafb;
+        }
+
+        .faq-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.18);
+            background-color: #ffffff;
+        }
+
+        .faq-send-btn {
+            border-radius: 999px;
+            border: none;
+            padding: 0 14px;
+            font-size: 13px;
+            font-weight: 500;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: background 0.15s, transform 0.06s, box-shadow 0.12s;
+            white-space: nowrap;
+        }
+
+        .faq-send-btn-icon {
+            font-size: 11px;
+            transform: translateY(0.5px);
+        }
+
+        .faq-send-btn:hover {
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+            box-shadow: 0 8px 14px rgba(79, 70, 229, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .faq-send-btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .faq-send-btn:disabled {
+            opacity: 0.6;
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .faq-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .faq-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .faq-messages::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.6);
+            border-radius: 999px;
+        }
+
+        /* Inline CV button (shown inside chat after resume question) */
+        .resume-inline-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 6px 12px;
+            margin-top: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            text-decoration: none;
+            box-shadow: 0 6px 14px rgba(79, 70, 229, 0.35);
+            transition: transform 0.06s, box-shadow 0.12s, background 0.12s;
+            width: fit-content;
+        }
+
+        .resume-inline-btn:hover {
+            background: linear-gradient(135deg, #4338ca, #4f46e5);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(79, 70, 229, 0.45);
+        }
+
+        .resume-inline-btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .resume-inline-btn-icon {
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="faq-chatbot" id="faq-chatbot-root">
+        <div class="faq-header">
+            <div class="faq-avatar">B</div>
+            <div class="faq-header-main">
+                <div class="faq-header-title">
+                    Chat with my bot
+                    <span class="faq-status-dot"></span>
+                </div>
+                <div class="faq-header-subtitle">Ask about me, my work, or how to reach me</div>
+            </div>
+            <div class="faq-header-right">
+                Personal site assistant<br />
+                <span style="opacity: 0.8;">Usually replies in seconds</span>
+            </div>
+        </div>
+
+        <div class="faq-messages" id="faq-messages"></div>
+
+        <div class="faq-typing-row" id="faq-typing-row">
+            <div class="faq-typing-bubble">
+                <div class="faq-dot"></div>
+                <div class="faq-dot"></div>
+                <div class="faq-dot"></div>
+            </div>
+        </div>
+
+        <div class="faq-suggestions" id="faq-suggestions"></div>
+
+        <div class="faq-input-area">
+            <input type="text" id="faq-input" class="faq-input" placeholder="Ask a question…" autocomplete="off" />
+            <button id="faq-send-btn" class="faq-send-btn">
+                <span>Send</span>
+                <span class="faq-send-btn-icon">➤</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 1) Configure FAQs with your personal info
+        const FAQS = [
+            {
+                question: "Who are you and what do you do?",
+                answer:
+                    "I’m [Your Name], and I work on [your main focus, e.g. web development, research, or design]. This site is where I share my work, ideas, and projects."
+            },
+            {
+                question: "What is your phone number?",
+                answer:
+                    "You can reach me directly at +1-555-123-4567. Please leave a short message if I miss your call."
+            },
+            {
+                question: "What is your email address?",
+                answer:
+                    "You can email me at you@example.com. I usually respond within 1–2 business days."
+            },
+            {
+                question: "What is your GitHub profile?",
+                answer:
+                    "You can see my code and projects on GitHub here: https://github.com/your-username"
+            },
+            {
+                question: "What is your LinkedIn profile?",
+                answer:
+                    "You can find my professional profile on LinkedIn here: https://www.linkedin.com/in/your-linkedin-id"
+            },
+            {
+                question: "What is your education background?",
+                answer:
+                    "I studied [Your Degree] at [Your University], where I focused on [key topics, e.g. computer science, human-computer interaction, machine learning]."
+            },
+            {
+                question: "What is your work experience?",
+                answer:
+                    "I have [number] years of experience in [your field]. My experience includes roles such as [Job Title] at [Company 1] and [Job Title] at [Company 2]. You can see more details in my resume."
+            },
+            {
+                question: "What research have you done?",
+                answer:
+                    "My research interests include [your areas, e.g. applied machine learning, human-centered design, etc.]. I’ve worked on projects such as [short description of 1–2 research projects]."
+            },
+            {
+                // This one will trigger the inline CV button
+                question: "Can I download your resume?",
+                answer:
+                    "Yes, you can download my latest CV as a PDF. Here’s a button to grab it:",
+                showResumeButton: true
+            },
+            {
+                question: "What kind of projects do you work on?",
+                answer:
+                    "I work on a mix of professional and personal projects, including web applications, tools, and research experiments. You can explore some of them in the Projects/Portfolio section of this site."
+            },
+            {
+                question: "Are you available for new opportunities?",
+                answer:
+                    "I’m always open to interesting opportunities and collaborations. If you have something in mind, feel free to reach out with a short description, and I’ll get back to you."
+            }
+        ];
+
+        // Quick suggestions
+        const FAQ_SUGGESTIONS = [
+            "What is your email address?",
+            "What is your phone number?",
+            "What is your GitHub profile?",
+            "What is your LinkedIn profile?",
+            "Can I download your resume?"
+        ];
+
+        // 2) Matching logic
+        function normalize(text) {
+            return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+        }
+
+        function similarity(a, b) {
+            const wa = new Set(normalize(a).split(" ").filter(Boolean));
+            const wb = new Set(normalize(b).split(" ").filter(Boolean));
+            if (wa.size === 0 || wb.size === 0) return 0;
+            const intersection = [...wa].filter(x => wb.has(x));
+            const union = new Set([...wa, ...wb]);
+            return union.size === 0 ? 0 : intersection.length / union.size;
+        }
+
+        function findBestFaqMatch(userQuestion) {
+            let best = null;
+            let bestScore = 0;
+
+            for (const faq of FAQS) {
+                const scoreQ = similarity(userQuestion, faq.question);
+                const scoreA = similarity(userQuestion, faq.answer) * 0.7;
+                const score = Math.max(scoreQ, scoreA);
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = faq;
+                }
+            }
+
+            const THRESHOLD = 0.10;
+            return bestScore >= THRESHOLD ? best : null;
+        }
+
+        // 3) UI / conversation logic
+        (function initFaqChatbot() {
+            const messagesEl = document.getElementById("faq-messages");
+            const inputEl = document.getElementById("faq-input");
+            const sendBtn = document.getElementById("faq-send-btn");
+            const typingRow = document.getElementById("faq-typing-row");
+            const suggestionsEl = document.getElementById("faq-suggestions");
+
+            function timeNow() {
+                const d = new Date();
+                return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            }
+
+            function addDayDivider(label) {
+                const div = document.createElement("div");
+                div.className = "faq-day-divider";
+                div.textContent = label;
+                messagesEl.appendChild(div);
+            }
+
+            function addMessage(text, sender) {
+                const row = document.createElement("div");
+                row.className = "faq-message " + sender;
+
+                const wrap = document.createElement("div");
+                wrap.className = "faq-bubble-wrapper";
+
+                const bubble = document.createElement("div");
+                bubble.className = "faq-bubble";
+                bubble.textContent = text;
+
+                const ts = document.createElement("div");
+                ts.className = "faq-timestamp";
+                ts.textContent = sender === "bot" ? "Bot • " + timeNow() : "You • " + timeNow();
+
+                wrap.appendChild(bubble);
+                wrap.appendChild(ts);
+                row.appendChild(wrap);
+
+                messagesEl.appendChild(row);
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+
+                return { row, wrap, bubble };
+            }
+
+            function addResumeButton(parentBubble) {
+                // CHANGE href TO YOUR REAL RESUME FILE (or keep resume.pdf next to this HTML file)
+                const link = document.createElement("a");
+                link.href = "/assets/pdf/Abhinav_Gupta_Resume.pdf";
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.className = "resume-inline-btn";
+                link.innerHTML = '<span class="resume-inline-btn-icon">⬇</span><span>Download CV</span>';
+
+                parentBubble.appendChild(link);
+            }
+
+            function setTyping(isTyping) {
+                typingRow.style.display = isTyping ? "block" : "none";
+                if (isTyping) {
+                    messagesEl.scrollTop = messagesEl.scrollHeight;
+                }
+            }
+
+            function handleUserMessage(rawText) {
+                const text = rawText.trim();
+                if (!text) return;
+
+                addMessage(text, "user");
+                inputEl.value = "";
+                inputEl.focus();
+
+                setTyping(true);
+                sendBtn.disabled = true;
+
+                const bestFaq = findBestFaqMatch(text);
+
+                const delay = 450 + Math.min(1200, text.length * 15);
+
+                setTimeout(() => {
+                    setTyping(false);
+                    sendBtn.disabled = false;
+
+                    if (bestFaq) {
+                        const { bubble } = addMessage(bestFaq.answer, "bot");
+
+                        // If this FAQ is the resume one, also show the button
+                        if (bestFaq.showResumeButton) {
+                            addResumeButton(bubble);
+                        }
+                    } else {
+                        addMessage(
+                            "I might not have that in my FAQ yet. Try asking about my contact info, education, work experience, or resume.",
+                            "bot"
+                        );
+                    }
+                }, delay);
+            }
+
+            // Initial greeting
+            addDayDivider("Today");
+            addMessage(
+                "Hi! I’m the bot for this personal site. Ask me about my contact details, education, work experience, research, or how to download my resume.",
+                "bot"
+            );
+
+            // Suggestions
+            FAQ_SUGGESTIONS.forEach(label => {
+                const pill = document.createElement("button");
+                pill.type = "button";
+                pill.className = "faq-suggestion-pill";
+                pill.textContent = label;
+                pill.addEventListener("click", () => {
+                    handleUserMessage(label);
+                });
+                suggestionsEl.appendChild(pill);
+            });
+
+            // Input events
+            sendBtn.addEventListener("click", () => handleUserMessage(inputEl.value));
+            inputEl.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleUserMessage(inputEl.value);
+                }
+            });
+        })();
+    </script>
+
+</body>
+
+</html>
