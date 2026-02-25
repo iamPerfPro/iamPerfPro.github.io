@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Bot
+title: bot
 permalink: /bot/
 nav: true
 nav_order: 6

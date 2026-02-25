@@ -1,9 +1,9 @@
 ---
 layout: cv
 permalink: /cv/
-title: Resume
+title: cv
 nav: true
-nav_order: 5
+nav_order: 1
 cv_pdf: Abhinav_Gupta_Resume.pdf # you can also use external links here
 description: 
 toc:

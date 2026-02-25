@@ -4,15 +4,15 @@
     "label": "Product Manager",
     "image": "",
     "email": "abnv418ATgmail.com",
-    "phone": "(912) 123-4567",
-    "url": "https://alshedivat.github.io/al-folio/",
-    "summary": "A German-born theoretical physicist, widely ranked among the greatest and most influential scientists of all time",
+    "phone": "NineNineNineNineFiveZeroSixTwoSixThree",
+    "url": "https://iamperfpro.github.io/",
+    "summary": "Experienced Researcher",
     "location": {
-      "address": "2712 Broadway St",
-      "postalCode": "CA 94115",
-      "city": "San Francisco",
-      "countryCode": "US",
-      "region": "California"
+      // "address": "2712 Broadway St",
+      // "postalCode": "CA 94115",
+      "city": "Gurugram",
+      "countryCode": "India"
+      // "region": "California"
     },
     "profiles": [
       {
@@ -24,14 +24,30 @@
   },
   "work": [
     {
-      "name": "Institute for Advanced Study, Princeton University",
-      "position": "Professor of Theoretical Physics",
-      "url": "https://example.com",
-      "startDate": "1933-01-01",
-      "endDate": "1955-01-01",
-      "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
-      "highlights": ["Relativity"]
+      "name": "StatusNeo Technoglogy Consulting Private Limited",
+      "position": "Senior Consultant- Product Management",
+      // "url": "https://example.com",
+      "startDate": "Sep-2025",
+      // "endDate": "1955-01-01",
+      // "summary": "Teaching at Palmer Physical Laboratory (now 302 Frist Campus Center). While not a professor at Princeton, I associated with the physics professors and continued to give lectures on campus.",
+      "highlights": [
+        "Building Prototypes", 
+        "Proof of Concepts", 
+        "Shaping Product Development"
+      ]
+    },
+    {
+      "name": "Previous Company Name",
+      "position": "Technical Product Manager",
+      "startDate": "2023-01-01",
+      "endDate": "2025-08-31",
+      "highlights": [
+        "Led cross-functional teams across engineering and design",
+        "Owned roadmap for B2B SaaS platform",
+        "Reduced production defects by 30%"
+      ]
     }
+    
   ],
   "volunteer": [
     {
